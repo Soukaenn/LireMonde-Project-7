@@ -1,0 +1,76 @@
+{
+  "livres": [
+    {
+      "id": 1,
+      "titre": "Dune",
+      "auteur": "Frank Herbert",
+      "genre": "science-fiction",
+      "annee": 1965,
+      "pages": 412,
+      "note": 4.8,
+      "couverture": "https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=400&q=80",
+      "description": "Dans un futur lointain, l'univers est régi par un impérium galactique où le contrôle de la planète désertique Arrakis, seule source de l'épice la plus précieuse de l'univers, détermine le destin de l'humanité. Paul Atréides, jeune héritier d'une noble famille, doit survivre aux intrigues politiques et découvrir son destin parmi les Fremen du désert.",
+      "aLire": false
+    },
+    {
+      "id": 2,
+      "titre": "1984",
+      "auteur": "George Orwell",
+      "genre": "science-fiction",
+      "annee": 1949,
+      "pages": 328,
+      "note": 4.7,
+      "couverture": "https://images.unsplash.com/photo-1629196914375-f7e48f477b6d?w=400&q=80",
+      "description": "Winston Smith vit sous la surveillance constante du Parti dans une Londres dystopique de l'année 1984. Le Big Brother veille sur chaque citoyen, réécrit l'histoire et élimine toute pensée dissidente. La rébellion de Winston contre ce régime totalitaire mènera à une conclusion aussi inévitable que dévastatrice.",
+      "aLire": false
+    },
+    {
+      "id": 3,
+      "titre": "Le Comte de Monte-Cristo",
+      "auteur": "Alexandre Dumas",
+      "genre": "classique",
+      "annee": 1844,
+      "pages": 1276,
+      "note": 4.9,
+      "couverture": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+      "description": "Edmond Dantès, jeune marin marseillais, est injustement accusé de bonapartisme et emprisonné au château d'If. Après quatorze années de détention, il s'évade et découvre un trésor sur l'île de Monte-Cristo. Devenu richissime, il entame une méticuleuse vengeance contre ceux qui l'ont trahi.",
+      "aLire": false
+    },
+    {
+      "id": 4,
+      "titre": "L'Étranger",
+      "auteur": "Albert Camus",
+      "genre": "philosophie",
+      "annee": 1942,
+      "pages": 185,
+      "note": 4.5,
+      "couverture": "https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=400&q=80",
+      "description": "Meursault, un employé d'Algérois, apprend la mort de sa mère en maison de retraite. Il assiste à l'enterrement sans manifester la douleur attendue. Quelques jours plus tard, il tue un Arabe sur une plage, pour des raisons liées au soleil. Son procès devient moins une accusation pour meurtre qu'un jugement de son indifférence face au monde.",
+      "aLire": false
+    },
+    {
+      "id": 5,
+      "titre": "Crime et Châtiment",
+      "auteur": "Fiodor Dostoïevski",
+      "genre": "drame",
+      "annee": 1866,
+      "pages": 592,
+      "note": 4.8,
+      "couverture": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&q=80",
+      "description": "Rodion Raskolnikov, un ancien étudiant de Saint-Pétersbourg, vivant dans la misère, décide de tuer une vieille usurière qu'il juge nuisible à la société. Après le meurtre, il est rongé par la culpabilité et la folie, tandis que l'inspecteur Porfiry Petrovič mène son enquête avec une perspicacité redoutable.",
+      "aLire": false
+    },
+    {
+      "id": 6,
+      "titre": "Le Seigneur des Anneaux",
+      "auteur": "J.R.R. Tolkien",
+      "genre": "fantasy",
+      "annee": 1954,
+      "pages": 1216,
+      "note": 4.9,
+      "couverture": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&q=80",
+      "description": "Frodon Sacquet hérite d'un anneau magique de son oncle Bilbon. Gandalf le révèle être l'Anneau Unique, forgé par Sauron pour dominer la Terre du Milieu. Frodon doit entreprendre un périlleux voyage jusqu'à la Montagne du Destin pour détruire l'anneau, accompagné de la Communauté de l'Anneau.",
+      "aLire": false
+    }
+  ]
+}
