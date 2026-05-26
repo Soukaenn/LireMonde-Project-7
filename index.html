@@ -3,328 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LireMonde - Explorez le monde des livres</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>LireMonde - Bibliothèque Interactive</title>
     <link rel="stylesheet" href="style.css">
+<base target="_blank">
 </head>
 <body>
-
     <!-- ========== NAVBAR ========== -->
     <nav class="navbar">
-        <a href="#home" class="logo">
-            <i class="fas fa-book-open"></i> LireMonde
-        </a>
-        <ul class="nav-links">
-            <li><a href="#home" class="nav-link active">Accueil</a></li>
-            <li><a href="#reading" class="nav-link">Ma liste</a></li>
-            <li><a href="#admin" class="nav-link">Admin</a></li>
-        </ul>
-        <div class="nav-right">
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Rechercher un livre...">
-            </div>
+        <div class="nav-brand">📚 LireMonde</div>
+        <div class="nav-links">
+            <button id="btn-accueil" class="nav-btn active" onclick="afficherPage('accueil')">Accueil</button>
+            <button id="btn-alire" class="nav-btn" onclick="afficherPage('alire')">À lire <span id="compteur-alire">(0)</span></button>
+            <button id="btn-admin" class="nav-btn" onclick="afficherPage('admin')">Admin</button>
+        </div>
+        <div class="nav-search">
+            <input type="text" id="recherche-globale" placeholder="🔍 Rechercher un livre..." oninput="rechercherLivres(this.value)">
         </div>
     </nav>
 
     <!-- ========== PAGE ACCUEIL ========== -->
-    <div id="page-home" class="page">
-        <!-- Hero -->
-        <section class="hero">
-            <div class="hero-content">
-                <div class="hero-tag">Lire, découvrir, s'évader</div>
-                <h1>Explorez le monde des livres</h1>
-                <p>Découvrez des classiques intemporels, des romans de science-fiction et bien plus encore.</p>
-                <div class="hero-buttons">
-                    <button class="btn btn-primary" onclick="scrollToBooks()">
-                        <i class="fas fa-compass"></i> Découvrir les livres
-                    </button>
-                    <button class="btn btn-outline" onclick="navigateTo('reading')">
-                        <i class="fas fa-bookmark"></i> Ma liste de lecture
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <div class="main-content">
-            <!-- Filtres par genre -->
-            <div class="categories">
-                <h2 class="section-title">Parcourir par genre</h2>
-                <div class="category-list" id="categoryList">
-                    <!-- Généré dynamiquement par JS -->
-                </div>
-            </div>
-
-            <!-- Grille livres -->
-            <div id="booksSection">
-                <div class="section-header">
-                    <h2 class="section-title">Tous les livres</h2>
-                    <p class="section-subtitle" id="booksCount">Chargement...</p>
-                </div>
-                <div class="books-grid" id="booksGrid">
-                    <!-- Généré dynamiquement par JS -->
-                </div>
-            </div>
+    <section id="page-accueil" class="page active">
+        <div class="hero">
+            <h1>📖 Découvrez votre prochaine lecture</h1>
+            <p>Explorez notre collection de livres et gérez votre liste de lecture</p>
         </div>
-    </div>
 
-    <!-- ========== PAGE MA LISTE ========== -->
-    <div id="page-reading" class="page hidden">
-        <div class="main-content reading-page">
-            <div class="section-header">
-                <div>
-                    <h2 class="section-title">Ma liste de lecture</h2>
-                    <p class="section-subtitle">Vos livres sauvegardés</p>
-                </div>
-                <span class="reading-count" id="readingCount">0</span>
-            </div>
-            <div class="reading-list" id="readingList">
-                <!-- Généré dynamiquement par JS -->
-            </div>
+        <div class="filtres-container">
+            <button onclick="filtrerParGenre('tous')" class="filtre-btn active" data-genre="tous">Tous</button>
+            <div id="filtres-genres"></div>
         </div>
-    </div>
+
+        <div id="grille-livres" class="grille-livres">
+            <!-- Les livres s'affichent ici dynamiquement -->
+        </div>
+    </section>
+
+    <!-- ========== PAGE À LIRE ========== -->
+    <section id="page-alire" class="page">
+        <div class="hero">
+            <h1>📋 Ma Liste de Lecture</h1>
+            <p>Les livres que vous souhaitez lire prochainement</p>
+        </div>
+
+        <div id="vide-alire" class="message-vide" style="display: none;">
+            <p>Aucun livre dans votre liste "À lire".</p>
+            <p>Ajoutez des livres depuis la page d'accueil !</p>
+        </div>
+
+        <div id="liste-alire" class="grille-livres">
+            <!-- Les livres "À lire" s'affichent ici -->
+        </div>
+    </section>
 
     <!-- ========== PAGE ADMIN ========== -->
-    <div id="page-admin" class="page hidden">
-        <div class="admin-layout">
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <div class="sidebar-logo">
-                    <i class="fas fa-book-open"></i> LireMonde
-                </div>
-                <ul class="sidebar-menu">
-                    <li><a href="#admin"><i class="fas fa-chart-pie"></i> Tableau de bord</a></li>
-                    <li><a href="#home"><i class="fas fa-book"></i> Voir les livres</a></li>
-                </ul>
-            </aside>
+    <section id="page-admin" class="page">
+        <div class="hero">
+            <h1>⚙️ Tableau de Bord Administrateur</h1>
+            <p>Gérez la collection de livres</p>
+        </div>
 
-            <!-- Contenu Admin -->
-            <main class="admin-main">
-                <div class="section-header">
-                    <div>
-                        <h2 class="section-title">Gestion des livres</h2>
-                        <p class="section-subtitle">Ajoutez, modifiez ou supprimez les livres</p>
-                    </div>
-                    <button class="btn btn-primary btn-sm" onclick="openAddModal()">
-                        <i class="fas fa-plus"></i> Ajouter un livre
-                    </button>
+        <button onclick="ouvrirFormulaire()" class="btn-ajouter">➕ Ajouter un Livre</button>
+
+        <div class="table-container">
+            <table class="table-admin">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Couverture</th>
+                        <th>Titre</th>
+                        <th>Auteur</th>
+                        <th>Genre</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-admin">
+                    <!-- Les lignes du tableau s'affichent ici -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ========== MODALE DÉTAILS ========== -->
+    <div id="modale" class="modale">
+        <div class="modale-contenu">
+            <button class="modale-fermer" onclick="fermerModale()">✕</button>
+            <div id="modale-body">
+                <!-- Contenu dynamique -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODALE FORMULAIRE ========== -->
+    <div id="formulaire-modale" class="modale">
+        <div class="modale-contenu formulaire-contenu">
+            <button class="modale-fermer" onclick="fermerFormulaire()">✕</button>
+            <h2 id="titre-formulaire">Ajouter un Livre</h2>
+            <form id="form-livre" onsubmit="sauvegarderLivre(event)">
+                <input type="hidden" id="livre-id">
+
+                <div class="form-groupe">
+                    <label for="form-titre">Titre *</label>
+                    <input type="text" id="form-titre" required placeholder="Titre du livre">
                 </div>
 
-                <!-- Stats -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(124,58,237,0.15);">
-                            <i class="fas fa-book" style="color: var(--accent);"></i>
-                        </div>
-                        <div class="stat-number" id="statTotal">0</div>
-                        <div class="stat-label">Total livres</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(16,185,129,0.15);">
-                            <i class="fas fa-bookmark" style="color: var(--success);"></i>
-                        </div>
-                        <div class="stat-number" id="statReading">0</div>
-                        <div class="stat-label">Dans ma liste</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: rgba(245,158,11,0.15);">
-                            <i class="fas fa-clock" style="color: var(--warning);"></i>
-                        </div>
-                        <div class="stat-number" id="statToRead">0</div>
-                        <div class="stat-label">Non sauvegardés</div>
-                    </div>
+                <div class="form-groupe">
+                    <label for="form-auteur">Auteur *</label>
+                    <input type="text" id="form-auteur" required placeholder="Nom de l'auteur">
                 </div>
 
-                <!-- Tableau -->
-                <div class="table-wrapper">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Livre</th>
-                                <th>Auteur</th>
-                                <th>Genre</th>
-                                <th>Année</th>
-                                <th>Note</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminTableBody">
-                            <!-- Généré dynamiquement par JS -->
-                        </tbody>
-                    </table>
+                <div class="form-groupe">
+                    <label for="form-genre">Genre *</label>
+                    <select id="form-genre" required>
+                        <option value="">Choisir un genre</option>
+                        <option value="Classique">Classique</option>
+                        <option value="Science-fiction">Science-fiction</option>
+                        <option value="Drame">Drame</option>
+                        <option value="Fantasy">Fantasy</option>
+                        <option value="Thriller">Thriller</option>
+                        <option value="Romance">Romance</option>
+                    </select>
                 </div>
-            </main>
+
+                <div class="form-groupe">
+                    <label for="form-description">Description *</label>
+                    <textarea id="form-description" required rows="4" placeholder="Résumé du livre..."></textarea>
+                </div>
+
+                <div class="form-groupe">
+                    <label for="form-couverture">URL de la couverture</label>
+                    <input type="url" id="form-couverture" placeholder="https://exemple.com/image.jpg">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" onclick="fermerFormulaire()" class="btn-annuler">Annuler</button>
+                    <button type="submit" class="btn-sauvegarder">💾 Sauvegarder</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <!-- ========== FOOTER ========== -->
     <footer class="footer">
         <div class="footer-content">
-            <div>
-                <div class="footer-brand">
-                    <i class="fas fa-book-open"></i> LireMonde
-                </div>
-                <p class="footer-desc">Votre bibliothèque numérique. Explorez, lisez, découvrez.</p>
+            <div class="footer-section">
+                <h3>📚 LireMonde</h3>
+                <p>Votre bibliothèque numérique interactive pour découvrir, organiser et gérer vos lectures.</p>
             </div>
-            <div>
-                <h4 class="footer-title">Genres</h4>
-                <ul class="footer-links">
-                    <li><a href="#home">Classique</a></li>
-                    <li><a href="#home">Science-Fiction</a></li>
-                    <li><a href="#home">Fantasy</a></li>
-                    <li><a href="#home">Drame</a></li>
+            <div class="footer-section">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a onclick="afficherPage('accueil')">Accueil</a></li>
+                    <li><a onclick="afficherPage('alire')">À lire</a></li>
+                    <li><a onclick="afficherPage('admin')">Administration</a></li>
                 </ul>
             </div>
-            <div>
-                <h4 class="footer-title">Contact</h4>
-                <ul class="footer-links">
-                    <li><a href="#"><i class="fas fa-envelope"></i> contact@liremonde.fr</a></li>
-                    <li><a href="#"><i class="fas fa-phone"></i> +33 1 23 45 67 89</a></li>
-                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> Paris, France</a></li>
-                </ul>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>📧 contact@liremonde.fr</p>
+                <p>📍 Paris, France</p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>© 2026 LireMonde. Tous droits réservés. | ReadSphere - Culture numérique</p>
+            <p> 2026 LireMonde - Tous droits réservés | ReadSphere</p>
         </div>
     </footer>
-
-    <!-- ========== MODALE DÉTAILS LIVRE ========== -->
-    <div class="modal-overlay" id="bookModal">
-        <div class="modal">
-            <img class="modal-image" id="modalImage" src="" alt="">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div>
-                        <h2 class="modal-title" id="modalTitle"></h2>
-                        <p class="modal-author" id="modalAuthor"></p>
-                    </div>
-                    <button class="modal-close" onclick="closeModal('bookModal')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <p class="modal-description" id="modalDesc"></p>
-                <div class="modal-meta">
-                    <div class="meta-item">
-                        <div class="meta-label">Genre</div>
-                        <div class="meta-value" id="modalGenre"></div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">Année</div>
-                        <div class="meta-value" id="modalYear"></div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">Pages</div>
-                        <div class="meta-value" id="modalPages"></div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">Note</div>
-                        <div class="meta-value" id="modalRating"></div>
-                    </div>
-                </div>
-                <div class="modal-actions">
-                    <button class="btn btn-primary" id="modalReadBtn">
-                        <i class="fas fa-bookmark"></i> Ajouter à ma liste
-                    </button>
-                    <button class="btn btn-outline" onclick="closeModal('bookModal')">
-                        <i class="fas fa-times"></i> Fermer
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== MODALE AJOUTER / MODIFIER ========== -->
-    <div class="modal-overlay form-modal" id="addModal">
-        <div class="modal form-modal-inner">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div>
-                        <h2 class="modal-title" id="formModalTitle">Ajouter un livre</h2>
-                        <p class="modal-author" id="formModalSubtitle">Remplissez les informations</p>
-                    </div>
-                    <button class="modal-close" onclick="closeModal('addModal')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-
-                <!-- Formulaire -->
-                <div id="formErrors" class="form-errors hidden"></div>
-
-                <div class="form-group">
-                    <label for="addTitle">Titre du livre <span class="required">*</span></label>
-                    <input type="text" id="addTitle" placeholder="Ex: Dune" maxlength="100">
-                    <span class="field-error" id="err-titre"></span>
-                </div>
-
-                <div class="form-group">
-                    <label for="addAuthor">Auteur <span class="required">*</span></label>
-                    <input type="text" id="addAuthor" placeholder="Ex: Frank Herbert" maxlength="80">
-                    <span class="field-error" id="err-auteur"></span>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="addGenre">Genre <span class="required">*</span></label>
-                        <select id="addGenre">
-                            <option value="">Choisir...</option>
-                            <option value="classique">Classique</option>
-                            <option value="science-fiction">Science-Fiction</option>
-                            <option value="drame">Drame</option>
-                            <option value="fantasy">Fantasy</option>
-                            <option value="philosophie">Philosophie</option>
-                        </select>
-                        <span class="field-error" id="err-genre"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="addYear">Année <span class="required">*</span></label>
-                        <input type="number" id="addYear" placeholder="Ex: 1965" min="1000" max="2026">
-                        <span class="field-error" id="err-annee"></span>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="addPages">Nombre de pages <span class="required">*</span></label>
-                        <input type="number" id="addPages" placeholder="Ex: 350" min="1" max="9999">
-                        <span class="field-error" id="err-pages"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="addRating">Note (0 - 5) <span class="required">*</span></label>
-                        <input type="number" id="addRating" placeholder="Ex: 4.5" min="0" max="5" step="0.1">
-                        <span class="field-error" id="err-note"></span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="addDesc">Description <span class="required">*</span></label>
-                    <textarea id="addDesc" placeholder="Résumé du livre..." maxlength="500"></textarea>
-                    <span class="field-error" id="err-description"></span>
-                </div>
-
-                <div class="form-group">
-                    <label for="addImage">URL de la couverture (optionnel)</label>
-                    <input type="url" id="addImage" placeholder="https://...">
-                    <span class="field-error" id="err-couverture"></span>
-                </div>
-
-                <div class="modal-actions" style="margin-top: 8px;">
-                    <button class="btn btn-outline" onclick="closeModal('addModal')">Annuler</button>
-                    <button class="btn btn-primary" id="submitBtn" onclick="submitBookForm()">
-                        Ajouter le livre
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== TOAST NOTIFICATIONS ========== -->
-    <div class="toast-container" id="toastContainer"></div>
-
-    <!-- ========== BOUTON FLOTTANT ========== -->
-    <button class="fab" id="fabBtn" onclick="openAddModal()">
-        <i class="fas fa-plus"></i>
-    </button>
 
     <script src="app.js"></script>
 </body>

@@ -1,8 +1,11 @@
 {
-  "dependencies": {
-    "json-server": "^1.0.0-beta.15"
-  },
+  "name": "liremonde",
+  "version": "1.0.0",
+  "description": "Bibliothèque interactive LireMonde",
   "scripts": {
     "start": "json-server --watch db.json --port 3000"
+  },
+  "devDependencies": {
+    "json-server": "^1.0.0-beta.1"
   }
 }

@@ -1,1 +1,77 @@
-{}
+{
+  "livres": [
+    {
+      "id": "1",
+      "titre": "Le Petit Prince",
+      "auteur": "Antoine de Saint-Exupéry",
+      "genre": "Classique",
+      "description": "Un aviateur rencontre un petit prince venu d'une autre planète. Ensemble, ils explorent les mystères de la vie, de l'amour et de l'amitié à travers un voyage poétique et philosophique.",
+      "couverture": "image/Le Petit Prince.jpg",
+      "aLire": false
+    },
+    {
+      "id": "2",
+      "titre": "Dune",
+      "auteur": "Frank Herbert",
+      "genre": "Science-fiction",
+      "description": "Sur la planète désertique d'Arrakis, Paul Atreides doit naviguer dans les intrigues politiques et religieuses pour sauver sa famille et son peuple, tout en découvrant son destin prophétique.",
+      "couverture": "image/Dune.jpg",
+      "aLire": false
+    },
+    {
+      "id": "3",
+      "titre": "Hamlet",
+      "auteur": "William Shakespeare",
+      "genre": "Drame",
+      "description": "Le prince Hamlet de Danemark cherche à venger la mort de son père, le roi, assassiné par son propre frère Claudius qui a usurpé le trône et épousé la reine.",
+      "couverture": "image/Hamlet.jpg",
+      "aLire": false
+    },
+    {
+      "id": "4",
+      "titre": "Harry Potter à l'école des sorciers",
+      "auteur": "J.K. Rowling",
+      "genre": "Fantasy",
+      "description": "Harry Potter découvre le jour de ses 11 ans qu'il est le fils de deux puissants sorciers. Il intègre l'école de sorcellerie de Poudlard où il va vivre des aventures extraordinaires.",
+      "couverture": "image/Harry Potter à l'école des sorciers.jpg",
+      "aLire": false
+    },
+    {
+      "id": "5",
+      "titre": "1984",
+      "auteur": "George Orwell",
+      "genre": "Science-fiction",
+      "description": "Dans un monde totalitaire dirigé par Big Brother, Winston Smith tente de résister à la surveillance constante et de préserver sa liberté de pensée dans une société sans liberté.",
+      "couverture": "image/1984.jpg",
+      "aLire": false
+    },
+    {
+      "id": "6",
+      "titre": "Les Misérables",
+      "auteur": "Victor Hugo",
+      "genre": "Classique",
+      "description": "L'histoire de Jean Valjean, un ancien forçat qui cherche la rédemption dans la France du XIXe siècle, entre révolution, amour et sacrifice pour les plus démunis.",
+      "couverture": "image/Les Misérables.jpg",
+      "aLire": false
+    },
+    {
+      "id": "7",
+      "titre": "Le Seigneur des Anneaux",
+      "auteur": "J.R.R. Tolkien",
+      "genre": "Fantasy",
+      "description": "Frodon Sacquet hérite d'un anneau magique aux pouvoirs maléfiques. Accompagné de la Communauté de l'Anneau, il doit entreprendre un périlleux voyage pour détruire l'Anneau dans les flammes de la Montagne du Destin.",
+      "couverture": "image/Le Seigneur des Anneaux.jpg",
+      "aLire": false
+    },
+    {
+      "id": "8",
+      "titre": "Fondation",
+      "auteur": "Isaac Asimov",
+      "genre": "Science-fiction",
+      "description": "Dans un futur lointain, le psychohistorien Hari Seldon prédit la chute inévitable de l’Empire Galactique. Pour préserver le savoir humain et réduire l’âge des ténèbres à venir, il crée la Fondation, un projet scientifique et stratégique situé aux confins de la galaxie. Entre intrigues politiques, crises successives et manipulations historiques, la Fondation devient rapidement le centre d’un affrontement entre science, pouvoir et destinée.",
+      "couverture": "image/Fondation.jpg",
+      "aLire": false
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
