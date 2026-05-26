@@ -1,15 +1,6 @@
 {
   "livres": [
     {
-      "id": "1",
-      "titre": "Le Petit Prince",
-      "auteur": "Antoine de Saint-Exupéry",
-      "genre": "Classique",
-      "description": "Un aviateur rencontre un petit prince venu d'une autre planète. Ensemble, ils explorent les mystères de la vie, de l'amour et de l'amitié à travers un voyage poétique et philosophique.",
-      "couverture": "image/Le Petit Prince.jpg",
-      "aLire": false
-    },
-    {
       "id": "2",
       "titre": "Dune",
       "auteur": "Frank Herbert",
@@ -25,7 +16,7 @@
       "genre": "Drame",
       "description": "Le prince Hamlet de Danemark cherche à venger la mort de son père, le roi, assassiné par son propre frère Claudius qui a usurpé le trône et épousé la reine.",
       "couverture": "image/Hamlet.jpg",
-      "aLire": false
+      "aLire": true
     },
     {
       "id": "4",

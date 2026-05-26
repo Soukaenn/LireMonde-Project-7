@@ -1,17 +1,17 @@
-// ========== CONFIGURATION ==========
+// URL de l'API
 const API_URL = 'http://localhost:3000/livres';
 
-// ========== ÉTAT GLOBAL ==========
-let tousLesLivres = [];        // Tous les livres de l'API
-let livresFiltres = [];        // Livres après filtrage/recherche
-let pageActive = 'accueil';    // Page actuelle
-let livreEnEdition = null;     // Livre en cours d'édition
+// Variables globales
+let tousLesLivres = [];
+let livresFiltres = [];
+let pageActive = 'accueil';
+let livreEnEdition = null;
 
-// ========== INITIALISATION ==========
+// Au demarrage de la page
 document.addEventListener('DOMContentLoaded', () => {
     chargerLivres();
 
-    // Fermer les modales en cliquant à l'extérieur
+    // Fermer modale si on clique dehors
     document.getElementById('modale').addEventListener('click', (e) => {
         if (e.target.id === 'modale') fermerModale();
     });
@@ -21,135 +21,102 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ========== API - FETCH ==========
-
-// Récupérer tous les livres
+// ========== CHARGER LES LIVRES ==========
 async function chargerLivres() {
     try {
         const reponse = await fetch(API_URL);
-        if (!reponse.ok) throw new Error('Erreur lors du chargement');
-
         tousLesLivres = await reponse.json();
-        livresFiltres = [...tousLesLivres];
-
-        afficherLivres();
-        genererFiltres();
-        mettreAJourCompteur();
-        afficherTableauAdmin();
-        afficherListeALire();
-
-    } catch (erreur) {
-        console.error('Erreur:', erreur);
-        afficherErreur('Impossible de charger les livres. Vérifiez que le serveur JSON est lancé (npx json-server --watch db.json --port 3000)');
-    }
-}
-
-// Récupérer un livre par ID
-async function getLivreParId(id) {
-    try {
-        const reponse = await fetch(`${API_URL}/${id}`);
-        if (!reponse.ok) throw new Error('Livre non trouvé');
-        return await reponse.json();
-    } catch (erreur) {
-        console.error('Erreur:', erreur);
-        alert('Erreur lors de la récupération du livre');
-    }
-}
-
-// Ajouter un livre (POST)
-async function ajouterLivre(livre) {
-    try {
-        const reponse = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(livre)
-        });
-        if (!reponse.ok) throw new Error('Erreur lors de l\'ajout');
-        return await reponse.json();
-    } catch (erreur) {
-        console.error('Erreur:', erreur);
-        alert('Erreur lors de l\'ajout du livre');
-    }
-}
-
-// Modifier un livre (PUT)
-async function modifierLivre(id, livre) {
-    try {
-        const reponse = await fetch(`${API_URL}/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(livre)
-        });
-        if (!reponse.ok) throw new Error('Erreur lors de la modification');
-        return await reponse.json();
-    } catch (erreur) {
-        console.error('Erreur:', erreur);
-        alert('Erreur lors de la modification du livre');
-    }
-}
-
-// Supprimer un livre (DELETE)
-async function supprimerLivre(id) {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce livre ?')) return;
-
-    try {
-        const reponse = await fetch(`${API_URL}/${id}`, {
-            method: 'DELETE'
-        });
-        if (!reponse.ok) throw new Error('Erreur lors de la suppression');
-
-        // Recharger les données
-        await chargerLivres();
-
-    } catch (erreur) {
-        console.error('Erreur:', erreur);
-        alert('Erreur lors de la suppression du livre');
-    }
-}
-
-// Basculer "À lire" (PATCH)
-async function basculerALire(id, etatActuel) {
-    try {
-        const reponse = await fetch(`${API_URL}/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ aLire: !etatActuel })
-        });
-        if (!reponse.ok) throw new Error('Erreur lors de la mise à jour');
-
-        // Mettre à jour localement sans recharger la page active
-        const livre = tousLesLivres.find(l => l.id == id);
-        if (livre) livre.aLire = !etatActuel;
-
-        // Rafraîchir seulement les composants nécessaires
-        afficherLivres();
-        genererFiltres();
-        mettreAJourCompteur();
-        afficherTableauAdmin();
-        if (pageActive === 'alire') {
-            afficherListeALire();
+        
+        // Sauvegarder les filtres actifs avant rechargement
+        const genreActif = document.querySelector('.filtre-btn.active')?.dataset.genre || 'tous';
+        const recherche = document.getElementById('recherche-globale').value.toLowerCase();
+        
+        // Réappliquer le filtre de genre
+        if (genreActif === 'tous') {
+            livresFiltres = [...tousLesLivres];
+        } else {
+            livresFiltres = tousLesLivres.filter(l => l.genre === genreActif);
+        }
+        
+        // Réappliquer la recherche si active
+        if (recherche) {
+            livresFiltres = livresFiltres.filter(l => 
+                l.titre.toLowerCase().includes(recherche) || 
+                l.auteur.toLowerCase().includes(recherche)
+            );
         }
 
+        afficherLivres();
+        genererFiltres();
+        
+        // Restaurer le bouton de filtre actif
+        if (genreActif !== 'tous') {
+            const btn = document.querySelector(`.filtre-btn[data-genre="${genreActif}"]`);
+            if (btn) btn.classList.add('active');
+            else document.querySelector('.filtre-btn[data-genre="tous"]')?.classList.add('active');
+        } else {
+            document.querySelector('.filtre-btn[data-genre="tous"]')?.classList.add('active');
+        }
+        
+        mettreAJourCompteur();
+        afficherTableauAdmin();
+        if (pageActive === 'alire') afficherListeALire();
     } catch (erreur) {
-        console.error('Erreur:', erreur);
-        alert('Erreur lors de la mise à jour');
+        document.getElementById('grille-livres').innerHTML = 
+            '<div class="message-vide">⚠️ Lance le serveur: npx json-server --watch db.json --port 3000</div>';
     }
+}
+
+// ========== AJOUTER / MODIFIER / SUPPRIMER ==========
+
+async function ajouterLivre(livre) {
+    delete livre.id; 
+    await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(livre)
+    });
+    await chargerLivres();
+}
+
+async function modifierLivre(id, livre) {
+    await fetch(`${API_URL}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(livre)
+    });
+}
+
+async function supprimerLivre(id) {
+    if (!confirm('Supprimer ce livre ?')) return;
+    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+    await chargerLivres();
+}
+
+async function basculerALire(id, etatActuel) {
+    await fetch(`${API_URL}/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ aLire: !etatActuel })
+    });
+
+    // Recharger depuis le serveur en preservant les filtres actifs
+    await chargerLivres();
 }
 
 // ========== AFFICHAGE ==========
 
-// Afficher les livres dans la grille
 function afficherLivres() {
     const conteneur = document.getElementById('grille-livres');
 
     if (livresFiltres.length === 0) {
-        conteneur.innerHTML = '<div class="message-vide">Aucun livre ne correspond à votre recherche.</div>';
+        conteneur.innerHTML = '<div class="message-vide">Aucun livre trouve.</div>';
         return;
     }
 
     conteneur.innerHTML = livresFiltres.map(livre => `
-        <div class="carte-livre" onclick="ouvrirModale(${livre.id})">
-            ${livre.aLire ? '<span class="badge-alire">📋 À lire</span>' : ''}
+        <div class="carte-livre" onclick="ouvrirModale('${livre.id}')">
+            ${livre.aLire ? '<span class="badge-alire">📋 A lire</span>' : ''}
             <img src="${livre.couverture}" alt="${livre.titre}" onerror="this.src='https://via.placeholder.com/250x300?text=Pas+d%27image'">
             <div class="info-livre">
                 <div class="titre-livre">${livre.titre}</div>
@@ -160,18 +127,13 @@ function afficherLivres() {
     `).join('');
 }
 
-// Générer les boutons de filtre par genre
 function genererFiltres() {
-    // Extraire les genres uniques
     const genres = [...new Set(tousLesLivres.map(l => l.genre))];
-    const conteneur = document.getElementById('filtres-genres');
-
-    conteneur.innerHTML = genres.map(genre => `
-        <button onclick="filtrerParGenre('${genre}')" class="filtre-btn" data-genre="${genre}">${genre}</button>
-    `).join('');
+    document.getElementById('filtres-genres').innerHTML = genres.map(genre => 
+        `<button onclick="filtrerParGenre('${genre}')" class="filtre-btn" data-genre="${genre}">${genre}</button>`
+    ).join('');
 }
 
-// Afficher la liste "À lire"
 function afficherListeALire() {
     const livresALire = tousLesLivres.filter(l => l.aLire);
     const conteneur = document.getElementById('liste-alire');
@@ -185,23 +147,20 @@ function afficherListeALire() {
 
     messageVide.style.display = 'none';
     conteneur.innerHTML = livresALire.map(livre => `
-        <div class="carte-livre" onclick="ouvrirModale(${livre.id})">
-            <span class="badge-alire">📋 À lire</span>
+        <div class="carte-livre" onclick="ouvrirModale('${livre.id}')">
+            <span class="badge-alire">📋 A lire</span>
             <img src="${livre.couverture}" alt="${livre.titre}" onerror="this.src='https://via.placeholder.com/250x300?text=Pas+d%27image'">
             <div class="info-livre">
                 <div class="titre-livre">${livre.titre}</div>
                 <div class="auteur-livre">✍️ ${livre.auteur}</div>
-                <button onclick="event.stopPropagation(); basculerALire(${livre.id}, true)" class="btn-alire btn-retirer-alire">❌ Retirer</button>
+                <button onclick="event.stopPropagation(); basculerALire('${livre.id}', true)" class="btn-alire btn-retirer-alire">❌ Retirer</button>
             </div>
         </div>
     `).join('');
 }
 
-// Afficher le tableau admin
 function afficherTableauAdmin() {
-    const tbody = document.getElementById('tbody-admin');
-
-    tbody.innerHTML = tousLesLivres.map(livre => `
+    document.getElementById('tbody-admin').innerHTML = tousLesLivres.map(livre => `
         <tr>
             <td>${livre.id}</td>
             <td><img src="${livre.couverture}" class="img-table" onerror="this.src='https://via.placeholder.com/50x70?text=?'"></td>
@@ -210,13 +169,12 @@ function afficherTableauAdmin() {
             <td><span class="genre-livre">${livre.genre}</span></td>
             <td>
                 <button onclick="editerLivre('${livre.id}')" class="btn-modifier">✏️ Modifier</button>
-                <button onclick="supprimerLivre(${livre.id})" class="btn-supprimer">🗑️ Supprimer</button>
+                <button onclick="supprimerLivre('${livre.id}')" class="btn-supprimer">🗑️ Supprimer</button>
             </td>
         </tr>
     `).join('');
 }
 
-// Mettre à jour le compteur "À lire"
 function mettreAJourCompteur() {
     const compteur = tousLesLivres.filter(l => l.aLire).length;
     document.getElementById('compteur-alire').textContent = `(${compteur})`;
@@ -225,37 +183,31 @@ function mettreAJourCompteur() {
 // ========== NAVIGATION ==========
 
 function afficherPage(page) {
-    // Cacher toutes les pages
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
-    // Afficher la page demandée
     document.getElementById(`page-${page}`).classList.add('active');
     document.getElementById(`btn-${page}`).classList.add('active');
 
     pageActive = page;
 
-    // Rafraîchir les données si nécessaire
     if (page === 'alire') afficherListeALire();
     if (page === 'admin') afficherTableauAdmin();
 }
 
-// ========== FILTRAGE & RECHERCHE ==========
+// ========== FILTRES & RECHERCHE ==========
 
 function filtrerParGenre(genre) {
-    // Mettre à jour les boutons actifs
     document.querySelectorAll('.filtre-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.genre === genre);
     });
 
-    // Filtrer les livres
     if (genre === 'tous') {
         livresFiltres = [...tousLesLivres];
     } else {
         livresFiltres = tousLesLivres.filter(l => l.genre === genre);
     }
 
-    // Réappliquer la recherche si active
     const recherche = document.getElementById('recherche-globale').value.toLowerCase();
     if (recherche) {
         livresFiltres = livresFiltres.filter(l => 
@@ -269,12 +221,9 @@ function filtrerParGenre(genre) {
 
 function rechercherLivres(motCle) {
     const recherche = motCle.toLowerCase();
-
-    // Partir des livres filtrés par genre ou tous
     const genreActif = document.querySelector('.filtre-btn.active')?.dataset.genre || 'tous';
     let base = genreActif === 'tous' ? [...tousLesLivres] : tousLesLivres.filter(l => l.genre === genreActif);
 
-    // Appliquer la recherche
     livresFiltres = base.filter(l => 
         l.titre.toLowerCase().includes(recherche) || 
         l.auteur.toLowerCase().includes(recherche) ||
@@ -284,23 +233,21 @@ function rechercherLivres(motCle) {
     afficherLivres();
 }
 
-// ========== MODALE DÉTAILS ==========
+// ========== MODALES ==========
 
 async function ouvrirModale(id) {
-    const livre = await getLivreParId(id);
-    if (!livre) return;
-
-    const modaleBody = document.getElementById('modale-body');
+    const reponse = await fetch(`${API_URL}/${id}`);
+    const livre = await reponse.json();
     const estALire = livre.aLire;
 
-    modaleBody.innerHTML = `
+    document.getElementById('modale-body').innerHTML = `
         <img src="${livre.couverture}" class="modale-image" onerror="this.src='https://via.placeholder.com/600x300?text=Pas+d%27image'">
         <h2 class="modale-titre">${livre.titre}</h2>
         <p class="modale-auteur">✍️ ${livre.auteur} | 🏷️ ${livre.genre}</p>
         <p class="modale-description">${livre.description}</p>
-        <button onclick="basculerALire(${livre.id}, ${estALire}); fermerModale();" 
+        <button onclick="basculerALire('${livre.id}', ${estALire}); fermerModale();" 
                 class="btn-alire ${estALire ? 'btn-retirer-alire' : 'btn-ajouter-alire'}">
-            ${estALire ? '❌ Retirer de la liste' : '➕ Ajouter à la liste'}
+            ${estALire ? '❌ Retirer' : '➕ Ajouter'}
         </button>
     `;
 
@@ -311,8 +258,6 @@ function fermerModale() {
     document.getElementById('modale').classList.remove('active');
 }
 
-// ========== FORMULAIRE ADMIN ==========
-
 function ouvrirFormulaire() {
     livreEnEdition = null;
     document.getElementById('titre-formulaire').textContent = 'Ajouter un Livre';
@@ -321,12 +266,11 @@ function ouvrirFormulaire() {
     document.getElementById('formulaire-modale').classList.add('active');
 }
 
-// BUG FIX: Utiliser == au lieu de === car json-server retourne les IDs en string
+// BUG FIX: == au lieu de === (json-server retourne ID en string)
 function editerLivre(id) {
     const livre = tousLesLivres.find(l => l.id == id);
     if (!livre) {
-        console.error('Livre non trouvé avec ID:', id);
-        alert('Erreur: Livre non trouvé');
+        alert('Livre non trouve');
         return;
     }
 
@@ -359,23 +303,14 @@ async function sauvegarderLivre(event) {
     };
 
     if (livreEnEdition) {
-        // Modifier (on garde l'état aLire existant)
         const ancien = tousLesLivres.find(l => l.id == livreEnEdition);
         livre.aLire = ancien ? ancien.aLire : false;
         livre.id = livreEnEdition;
         await modifierLivre(livreEnEdition, livre);
     } else {
-        // Ajouter
         await ajouterLivre(livre);
     }
 
     fermerFormulaire();
     await chargerLivres();
-}
-
-// ========== UTILITAIRES ==========
-
-function afficherErreur(message) {
-    const conteneur = document.getElementById('grille-livres');
-    conteneur.innerHTML = `<div class="erreur-message">⚠️ ${message}</div>`;
 }
