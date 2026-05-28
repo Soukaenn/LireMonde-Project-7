@@ -16,7 +16,7 @@
       "genre": "Drame",
       "description": "Le prince Hamlet de Danemark cherche à venger la mort de son père, le roi, assassiné par son propre frère Claudius qui a usurpé le trône et épousé la reine.",
       "couverture": "image/Hamlet.jpg",
-      "aLire": true
+      "aLire": false
     },
     {
       "id": "4",
@@ -52,7 +52,7 @@
       "genre": "Fantasy",
       "description": "Frodon Sacquet hérite d'un anneau magique aux pouvoirs maléfiques. Accompagné de la Communauté de l'Anneau, il doit entreprendre un périlleux voyage pour détruire l'Anneau dans les flammes de la Montagne du Destin.",
       "couverture": "image/Le Seigneur des Anneaux.jpg",
-      "aLire": false
+      "aLire": true
     },
     {
       "id": "8",
